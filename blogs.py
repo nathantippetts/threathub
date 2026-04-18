@@ -20,25 +20,26 @@ def krebs():
     return blog
 
 
-def threatpost():
+def hackernews():
     # Grabs the first four headlines, descriptions, urls, and dates then returns a list of dictionaries containing each post
-    url = "https://threatpost.com"
+    url = "https://thehackernews.com"
     r1 = requests.get(url)
     coverpage = r1.content
     soup1 = BeautifulSoup(coverpage, features="html.parser")
-    coverpage_news = soup1.findAll("h2", class_="c-card__title")
+    coverpage_news = soup1.findAll("h2", class_="home-title")
     headlines = []
     for headline in coverpage_news[0:4]:
         headlines.append(headline.get_text())
-    coverpage_desc = soup1.findAll("article", class_="c-card")
+    coverpage_desc = soup1.findAll("div", class_="home-desc")
     descriptions = []
     for desc in coverpage_desc[0:4]:
-        descriptions.append(desc.findChild("p").get_text())
+        descriptions.append(desc.get_text())
     post_urls = []
-    for item in coverpage_news[0:4]:
-        post_urls.append(item.findChild("a")["href"])
-    author = "ThreatPost"
-    date = soup1.findAll("time")
+    links = soup1.findAll("a", class_="story-link")
+    for item in links[0:4]:
+        post_urls.append(item.get("href"))
+    author = "The Hacker News"
+    date = soup1.findAll("span", class_="h-datetime")
     dates = []
     for item in date[0:4]:
         dates.append(item.get_text())
